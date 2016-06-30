@@ -121,6 +121,13 @@
         ;
         dayRect.exit().remove();
 
+            dayRect.on('click', function(d) {
+                
+                console.log(d);
+            });
+
+
+
         var monthPath = svg.select("g").selectAll(".month").data(function (d) { return d3.time.months(new Date(d, 0, 1), new Date(d + 1, 0, 1)); });
         monthPath.enter().append("path")
             .attr("class", "month")
