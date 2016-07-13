@@ -3,7 +3,7 @@
     if (typeof define === "function" && define.amd) {
         define(["../common/HTMLWidget", "auto-complete", "css!./AutoCompleteText", "css!auto-complete"], factory);
     } else {
-        root.other_AutoCompleteText = factory(root.common_HTMLWidget, root.AutoComplete);
+        root.other_AutoCompleteText = factory(root.common_HTMLWidget, root.autoComplete);
     }
 }(this, function (HTMLWidget, autoComplete) {
     function AutoCompleteText() {
@@ -55,8 +55,7 @@
         ;
 //var autoCompleted = this;
 
-        this._autoComplete =
-        new autoComplete({
+        this._autoComplete = new autoComplete({
             //selector: 'input[name="'+ context.id()+'_input_name' + '"]',
         	selector: '#' + context.id()+'_input',
             minChars: context.minCharsText(),

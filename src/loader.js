@@ -49,6 +49,9 @@
                 "src": "../src"
             },
             shim: {
+                "auto-complete": {
+                    exports: "autoComplete"
+                },
                 "amcharts.funnel": {
                     deps: ["amcharts"],
                     exports: "AmCharts",
