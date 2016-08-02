@@ -35,6 +35,8 @@ require.config({
         "simpleheat": "../bower_components/simpleheat/index",
 
         "auto-complete": "../bower_components/javascript-auto-complete/auto-complete",
+        "ruleJS": "../bower_components/ruleJS/dist/full/ruleJS.all.full",
+        "parser": "../bower_components/ruleJS/dist/full/ruleJS.parser.full",
 
         "src": "../src"
     },
@@ -133,6 +135,8 @@ case "cdn.rawgit.com":
             "amchartsImg": "//" + window.location.hostname + "/amcharts/amcharts3/3.18.0/amcharts/images/",
             "simpleheat": "//" + window.location.hostname + "/mourner/simpleheat/v0.3.0/simpleheat",
             "auto-complete": "//" + window.location.hostname + "/Pixabay/JavaScript-autoComplete/master/auto-complete",
+            "ruleJS": "//" + window.location.hostname + "/handsontable/ruleJS/0.0.5/dist/ruleJS.all.full.min",
+            "parser":"//" + window.location.hostname +  "/handsontable/ruleJS/0.0.5/dist/ruleJS.parser.full",
             "src": "../src"
         }
     });
