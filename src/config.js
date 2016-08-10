@@ -34,10 +34,32 @@ require.config({
 
         "simpleheat": "../bower_components/simpleheat/index",
         "autoComplete": "../bower_components/javascript-auto-complete/auto-complete",
+        "parser": "../bower_components/ruleJS/dist/full/ruleJS.parser.full",
+        "ruleJS": "../bower_components/ruleJS/dist/full/ruleJS.all.full",
+        "parser": "../bower_components/ruleJS/dist/full/ruleJS.parser.full",
 
         "src": "../src"
     },
     shim: {
+        "parser": {
+            exports: "ruleJS",
+            init: function() {
+                ruleJS.isReady = true;
+            }
+        },
+        "rulejs": {
+            exports: "ruleJS",
+            init: function() {
+                ruleJS.isReady = true;
+            }
+        },
+        "handsontable": {
+            deps: ["RuleJS"],
+            exports: "Handsontable",
+            init: function() {
+                Handsontable.isReady = true;
+            }
+        },
         "amcharts.funnel": {
             deps: ["amcharts"],
             exports: "AmCharts",
@@ -133,6 +155,8 @@ case "cdn.rawgit.com":
 
             "simpleheat": "//" + window.location.hostname + "/mourner/simpleheat/v0.3.0/simpleheat",
             "autoComplete": "//" + window.location.hostname + "/Pixabay/JavaScript-autoComplete/1.0.4/auto-complete",
+            "ruleJS": "//" + window.location.hostname + "/handsontable/ruleJS/0.0.5/dist/ruleJS.all.full.min",
+            "parser":"//" + window.location.hostname +  "/handsontable/ruleJS/0.0.5/dist/ruleJS.parser.full",
 
             "src": "../src"
         }

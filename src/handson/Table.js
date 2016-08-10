@@ -1,13 +1,11 @@
 "use strict";
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
-        define(["d3", "handsontable", "../common/Widget", "../common/HTMLWidget", "../common/PropertyExt", "../common/Utility", "css!handsontable", 
-
-"css!./Table"], factory);
+        define(["d3", "ruleJS", "handsontable", "../common/Widget", "../common/HTMLWidget", "../common/PropertyExt", "../common/Utility", "css!handsontable", "css!./Table"], factory);
     } else {
-        root.handson_Table = factory(root.d3, root.Handsontable, root.common_Widget, root.common_HTMLWidget, root.common_PropertyExt, root.common_Utility);
+        root.handson_Table = factory(root.d3, root.ruleJS, root.Handsontable, root.common_Widget, root.common_HTMLWidget, root.common_PropertyExt, root.common_Utility);
     }
-}(this, function (d3, Handsontable, Widget, HTMLWidget, PropertyExt, Utility) {
+}(this, function (d3, ruleJS, Handsontable, Widget, HTMLWidget, PropertyExt, Utility) {
 
     function Column(owner) {
         PropertyExt.call(this);
@@ -23,7 +21,8 @@
     Column.prototype.publish("belowMinRangeColor", "#ff0000", "html-color", "Series Color", function () { return this._owner ? this._owner.columns() : []; }, { optional: true });
     Column.prototype.publish("aboveMaxRangeColor", "#0000ff", "html-color", "Series Color", function () { return this._owner ? this._owner.columns() : []; }, { optional: true });
     Column.prototype.publish("rangeColor", "#00ff00", "html-color", "Series Color", function () { return this._owner ? this._owner.columns() : []; }, { optional: true });
-    
+    //Column.prototype.publish("hiddenColumn", false, "boolean", "enable or disable HTML within cells",null,{tags:["Private"]});
+
     function Table() {
         HTMLWidget.call(this);
         this._tag = "div";
@@ -79,7 +78,7 @@ true });
             sortIndicator: true,
             wordWrap: false,
             manualRowResize: true,
-            formulas : true,      
+            formulas : false,      
             colHeaders: true,     
             //autoColumnSize: {syncLimit: 10},
             //autoRowSize: {syncLimit: 10},
@@ -202,12 +201,13 @@ cellProperties);
                                                  if(typeof cellValue ==="number" && !isNaN(cellValue)){
                                                     temp += parseFloat(cellValue); 
                                                     break;
-                                                 }  
+                                                 }      
                                         }
                                     }  
 
                                     td.textContent = temp;
                                 }
+
                            }
                         }else{
                                 cellProperties.readOnly = true;

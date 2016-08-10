@@ -31,6 +31,9 @@
                 "d3-tip": "../bower_components/d3-tip/index",
                 "d3-bullet": "../bower_components/d3-plugins/bullet/bullet",
                 "handsontable": "../bower_components/handsontable/dist/handsontable.full",
+                "ruleJS": "../bower_components/ruleJS/dist/full/ruleJS.lib.full",
+                "parser": "../bower_components/ruleJS/dist/full/ruleJS.parser.full",
+
 
                 "amcharts": "../bower_components/amcharts3/amcharts/amcharts",
                 "amcharts.funnel": "../bower_components/amcharts3/amcharts/funnel",
@@ -49,6 +52,25 @@
                 "src": "../src"
             },
             shim: {
+                "rulejs": {
+                    exports: "ruleJS",
+                    init: function() {
+                        ruleJS.isReady = true;
+                    }
+                },
+                "handsontable": {
+                    //deps: ["RuleJS"],
+                    exports: "Handsontable",
+                    init: function() {
+                        Handsontable.isReady = true;
+                    }
+                },
+                "rulejs": {
+                    exports: "ruleJS",
+                    init: function() {
+                        ruleJS.isReady = true;
+                    }
+                },
                 "amcharts.funnel": {
                     deps: ["amcharts"],
                     exports: "AmCharts",
@@ -132,6 +154,8 @@
             "d3-tip": rawgitBaseUrl + "/Caged/d3-tip/v0.6.7/index",
             "d3-bullet": rawgitBaseUrl + "/d3/d3-plugins/master/bullet/bullet",
             "handsontable": rawgitBaseUrl + "/handsontable/handsontable/0.24.3/dist/handsontable.full.min",
+            "ruleJS": rawgitBaseUrl + "/handsontable/ruleJS/0.0.5/dist/ruleJS.all.full.min",
+            "parser": rawgitBaseUrl + "/handsontable/ruleJS/0.0.5/dist/ruleJS.parser.full",
 
             "amcharts": rawgitBaseUrl + "/amcharts/amcharts3/3.18.0/amcharts/amcharts",
             "amcharts.funnel": rawgitBaseUrl + "/amcharts/amcharts3/3.18.0/amcharts/funnel",
