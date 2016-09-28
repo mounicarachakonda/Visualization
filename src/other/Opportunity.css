@@ -44,12 +44,11 @@
     fill:white;
 }
 
-.graph_Opportunity  .node_date_change_text {
+.graph_Opportunity .node_date_change_text {
   font-size:18px;
   font-family:Arial;
   color: black;
   font-weight: bold;
-
 }
 
 .graph_Opportunity  .node_prev_text {
