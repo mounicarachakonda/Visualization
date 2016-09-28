@@ -35,6 +35,9 @@
 
     function Opportunity(target) {
         SVGWidget.call(this);
+
+        this._drawStartPos = "origin";
+
         this.groupCount = 7;
     }
     Opportunity.prototype = Object.create(SVGWidget.prototype);
@@ -78,7 +81,13 @@
     Opportunity.prototype.publish("mouseHover", [], "propertyArray", "mouse hover options", null, { autoExpand: mouseHoverColumn });
     Opportunity.prototype.publish("columnData", [], "propertyArray", "column data", null, { autoExpand: columnDropdown });
 
-    Opportunity.prototype.enter = function(domNode, element) {
+    Opportunity.prototype.getIds = function () {
+        var dropdownList = this.columns();
+        dropdownList.unshift("default");
+        return dropdownList;
+    };
+
+    Opportunity.prototype.enter = function (domNode, element) {
         SVGWidget.prototype.enter.apply(this, arguments);
         var paddingTop = 30;
         var nodeRectHeight = 14;
@@ -86,14 +95,23 @@
         var h = (this.data().length + 1) * (nodeRectHeight + verticalPadding + 1) + paddingTop;
         this.svg = element.append("g")
             .attr("width", ((this.groupCount * 100) + 1))
-            .attr("height", h);
+            .attr("height", h)
+        ;
+        this.svg.append('defs').append('marker')
+            .classed("arrowhead", true)
+            .attr('id', 'end-arrow')
+            .attr('viewBox', '0 -5 10 10')
+            .attr('refX', 6)
+            .attr('markerWidth', 8)
+            .attr('markerHeight', 8)
+            .attr('orient', 'auto')
+            .append('svg:path')
+            .attr('d', 'M0,-5L10,0L0,5')
+            .attr('fill', 'rgb(100,100,100)')
+        ;
     };
-    Opportunity.prototype.getIds = function() {
-        var dropdownList = this.columns();
-        dropdownList.unshift("default");
-        return dropdownList;
-    };
-    Opportunity.prototype.update = function(domNode, element) {
+
+    Opportunity.prototype.update = function (domNode, element) {
         SVGWidget.prototype.update.apply(this, arguments);
         var context = this;
         var data = this.data();
@@ -121,46 +139,48 @@
         var w = this.width();
         var nodeRectWidthPadding = 30;
         var nodeRectWidth = ((w / context.groupCount) - nodeRectWidthPadding);
+
+        //  Groups  ---
         var group = this.svg.selectAll(".group").data(groups);
         group.enter().append("rect")
-            .classed("group", true);
-        group.attr("width", function(d, i) {
-             return w / context.groupCount;
-        })
-            .attr("height", h - paddingTop)
-            .attr("x", function(d, i) {
+            .attr("class", "group")
+        ;
+        group
+            .attr("x", function (d, i) {
                 return (i * w / context.groupCount) + 1;
             })
-            .attr("y", paddingTop);
+            .attr("y", paddingTop)
+            .attr("width", w / this.groupCount)
+            .attr("height", h - paddingTop)
+        ;
         group.exit().remove();
-        this.svg.selectAll("g.update").remove();
-        var groupHeadings = this.svg.selectAll(".group_headings")
-            .data(groups);
-        groupHeadings.enter()
-            .append("text")
-            .attr("class", "group_headings update")
-            .attr("x", function(d, i) {
+
+        //  Group Headings  ---
+        var groupHeadings = this.svg.selectAll(".group_headings").data(groups);
+        groupHeadings.enter().append("text")
+            .attr("class", "group_headings")
+            .attr("y", 20)
+        ;
+        groupHeadings
+            .attr("x", function (d, i) {
                 return (i * w / context.groupCount) + ((w / context.groupCount) / context.groupCount);
             })
-            .attr("y", 20);
-        groupHeadings.text(function(d, i) {
-            if (context.headerLabels().length > 0) {
-                if (context.headerLabels()[i] && (context.headerLabels()[i]).headerLabel()) {
-                    return (context.headerLabels()[i]).headerLabel();
+            .text(function (d, i) {
+                if (context.headerLabels().length > 0) {
+                    if (context.headerLabels()[i] && (context.headerLabels()[i]).headerLabel()) {
+                        return (context.headerLabels()[i]).headerLabel();
+                    }
                 }
-            }
-        });
+                return "";
+            })
+        ;
         groupHeadings.exit().remove();
         
         if (this.previousGroup() === "prev_group" && this.currentGroup() === "cur_group") {
-            var node_date_change = this.svg.selectAll(".node_date_change")
-                .data(data)
-                .enter()
-                .append("g")
-                .attr("class", "update")
-                .attr("transform", function(d, i) {
-                    return "translate(" + ((9 * w / context.groupCount) + (nodeRectWidthPadding) - 80) + "," + ((i + (i * (nodeRectHeight + verticalPadding))) + 12 + paddingTop) + ")";
-                })
+            //  Node Date Change  --- 
+            var node_date_change = this.svg.selectAll(".node_date_change").data(data);
+            node_date_change.enter().append("g")
+                .attr("class", "node_date_change update")
                 .on("mouseover", function(d) {
                     div2.transition()
                         .duration(200)
@@ -184,62 +204,103 @@
                     div2.transition()
                         .duration(500)
                         .style("opacity", 0);
-                });
-            node_date_change.append("rect")
-                .classed("node_date_change", true)
-                .attr("width", 5)
-                .attr("height", nodeRectHeight)
-                .attr("rx", 6)
-                .attr("ry", 6);
-            var node_prev_group = this.svg.selectAll(".node_prev_group")
-                .data(data);
-            node_prev_group.attr("class", "update");
-            node_prev_group.enter()
-                .append("g")
-                .attr("class", function(d) {
-                    if (d.delta !== 0) {
-                        return "node_prev_group changed";
-                    } else {
-                        return "node_prev_group";
-                    }
                 })
-                .attr("transform", function(d, i) {
+                .each(function (d) {
+                    var element = d3.select(this);
+                    element.append("rect")
+                        .attr("class", "node_date_change_rect")
+                        .attr("width", 5)
+                        .attr("height", nodeRectHeight)
+                        .attr("rx", 6)
+                        .attr("ry", 6)
+                    ;
+                })
+            ;
+            node_date_change
+                .attr("transform", function (d, i) {
+                    return "translate(" + ((9 * w / context.groupCount) + (nodeRectWidthPadding) - 80) + "," + ((i + (i * (nodeRectHeight + verticalPadding))) + 12 + paddingTop) + ")";
+                })
+            ;
+            node_date_change.exit().remove();
+
+            //  Node Prev Group  --- 
+            var node_prev_group = this.svg.selectAll(".node_prev_group").data(data);
+            node_prev_group.enter().append("g")
+                .attr("class", "node_prev_group")
+                .each(function (d) {
+                    var element = d3.select(this);
+                    element.append("rect")
+                        .attr("class", "node_prev_rect")
+                        .attr("rx", 6)
+                        .attr("ry", 6)
+                    ;
+                    element.append("text")
+                        .attr("class", "node_prev_text")
+                    ;
+                })
+            ;
+            node_prev_group
+                .classed("update", true)
+                .classed("changed", function(d) { return d.delta !== 0; })
+                .attr("transform", function (d, i) {
                     return "translate(" + ((((d.prev_group - 1)) * w / context.groupCount) + (nodeRectWidthPadding / 2)) + "," + ((i + (i * (nodeRectHeight + verticalPadding))) + 10 + paddingTop) + ")";
+                })
+                .each(function (d) {
+                    var element = d3.select(this);
+
+                    //  Change Lines  --- 
+                    var changeLines = element.selectAll('.arrow').data(d.delta !== 0 ? [d] : []);
+                    changeLines.enter().append("line")
+                        .attr("class", "arrow update")
+                    ;
+                    changeLines
+                        .attr("x1", function (d) {
+                            return (d.delta > 0) ? nodeRectWidth : 0;
+                        })
+                        .attr("y1", nodeRectHeight / 2)
+                        .attr("x2", function (d) {
+                            return (d.delta > 0) ? (nodeRectWidth + nodeRectWidthPadding - 4) + ((Math.abs(d.delta) - 1)) * (w / context.groupCount) : ((-nodeRectWidthPadding - ((Math.abs(d.delta) - 1)) * (w / context.groupCount)) + 4);
+                        })
+                        .attr("y2", nodeRectHeight / 2)
+                        .style("stroke-dasharray", ("3, 3"))
+                        .style("stroke", "rgb(100,100,100)")
+                        .style("marker-end", "url(#end-arrow)")
+                        .style("opacity", "1")
+                    ;
+                    changeLines.exit().remove();
                 });
-            node_prev_group.append("rect")
-                .classed("node_prev_rect", true)
+            ;
+            var node_previous_rect = node_prev_group.select(".node_prev_rect");
+            node_previous_rect
                 .attr("width", nodeRectWidth)
                 .attr("height", nodeRectHeight)
-                .attr("rx", 6)
-                .attr("ry", 6);
-            var node_previous_text = node_prev_group.append("text");
-            node_previous_text.attr("class", "update");
-            node_previous_text.classed("node_prev_text", true)
+            ;
+            var node_previous_text = node_prev_group.select(".node_prev_text");
+            node_previous_text
                 .attr("dy", (nodeRectHeight / 2) + 3)
-                .attr("dx", (nodeRectWidth / 4));
-            node_previous_text.text(function(d) {
-                if (typeof d[dropDownOption] === "number")
-                    return d[dropDownOption];
-                else
-                    return d[dropDownOption].substring(0, 14);
-            });
+                .attr("dx", (nodeRectWidth / 4))
+                .text(function (d) {
+                    if (typeof d[dropDownOption] === "number")
+                        return d[dropDownOption];
+                    else
+                        return d[dropDownOption].substring(0, 14);
+                })
+            ;
             node_prev_group.exit().remove();
 
-            var node_cur_group = this.svg.selectAll(".node_cur_group")
-                .data(data)
-                .enter()
-                .append("g")
-                .attr("class", "update")
+            //  Node Cur Group  --- 
+            var node_cur_group = this.svg.selectAll(".node_cur_group").data(data);
+            node_cur_group.enter().append("g")
                 .attr("class", "node_cur_group")
-                .attr("transform", function(d, i) {
+                .attr("transform", function (d, i) {
                     return "translate(" + ((((d.prev_group - 1)) * w / context.groupCount) + (nodeRectWidthPadding / 2)) + "," + ((i + (i * (nodeRectHeight + verticalPadding))) + 10 + paddingTop) + ")";
                 })
-                .on("mouseover", function(d) {
+                .on("mouseover", function (d) {
                     div.transition()
                         .duration(200)
                         .style("opacity", 0.9);
                     var tooltipHtml = "";
-                    mouseHoverMapping.forEach(function(obj, index) {
+                    mouseHoverMapping.forEach(function (obj, index) {
                         if (obj.hoverValue() !== undefined) {
                             tooltipHtml = tooltipHtml + "<span style='font-weight:bold'>" + obj.hoverValue() + ":  " + "</span>" + d[obj.hoverList()] + "<br/>";
                         }
@@ -248,108 +309,99 @@
                         .style("left", (d3.event.pageX) + "px")
                         .style("top", (d3.event.pageY - 100) + "px");
                 })
-                .on("mouseout", function(d) {
+                .on("mouseout", function (d) {
                     div.transition()
                         .duration(500)
                         .style("opacity", 0);
+                })
+                .each(function (d) {
+                    var element = d3.select(this);
+                    element.append("rect")
+                        .attr("class", "node_cur_rect")
+                        .attr("width", nodeRectWidth)
+                        .attr("height", nodeRectHeight)
+                        .attr("fill", function (d) {
+                            var color;
+                            if (d.delta < 0 || d.cur_group === 7) {
+                                color = "#F78181";
+                            } else {
+                                color = "#A9F5A9";
+                            }
+                            return color;
+                        })
+                        .attr("rx", 6)
+                        .attr("ry", 6)
+                    ;
+                    element.append("a")
+                        .attr("xlink:href", function (d) {
+                            return "https://mycrm.rs.lexisnexis.net/callcenter_enu/start.swe?SWECmd=GotoView&SWEView=All+Opportunity+List+View&SWERF=1&SWEHo=mycrm.rs.lexisnexis.net&SWEBU=1&SWEApplet0=LNRS+Opportunity+List+Applet&SWERowId0=" + d.id;
+                        })
+                        .attr("xlink:show", "new")
+                        .append("text")
+                            .attr("class", "node_cur_text")
+                    ;
                 });
-            node_cur_group.append("rect")
-                .classed("node_cur_rect", true)
-                .attr("width", nodeRectWidth)
-                .attr("height", nodeRectHeight)
-                .attr("fill", function(d) {
-                    var color;
-                    if (d.delta < 0 || d.cur_group === 7) {
-                        color = "#F78181";
-                    } else {
-                        color = "#A9F5A9";
-                    }
-                    return color;
-                })
-                .attr("rx", 6)
-                .attr("ry", 6);
-            node_cur_group.append("a")
-                .attr("xlink:href", function(d) {
-                    return "https://mycrm.rs.lexisnexis.net/callcenter_enu/start.swe?SWECmd=GotoView&SWEView=All+Opportunity+List+View&SWERF=1&SWEHo=mycrm.rs.lexisnexis.net&SWEBU=1&SWEApplet0=LNRS+Opportunity+List+Applet&SWERowId0=" + d.id;
-                })
-                .attr("xlink:show", "new");
-            node_cur_group.attr("class", "update");
-            var node_current_text = node_cur_group.append("text");
-            node_current_text.attr("class", "update");
-            node_current_text.classed("node_cur_text", true)
-                .attr("dy", (nodeRectHeight / 2) + 3)
-                .attr("dx", (nodeRectWidth / 4))
-                .style("fill", "blue");
-            node_current_text.text(function(d) {
-                if (typeof d[dropDownOption] === "number")
-                    return d[dropDownOption];
-                else
-                    return d[dropDownOption].substring(0, 14);
-            });
-            this.svg.append('defs').append('marker')
-                .classed("arrowhead", true)
-                .attr('id', 'end-arrow')
-                .attr('viewBox', '0 -5 10 10')
-                .attr('refX', 6)
-                .attr('markerWidth', 8)
-                .attr('markerHeight', 8)
-                .attr('orient', 'auto')
-                .append('svg:path')
-                .attr('d', 'M0,-5L10,0L0,5')
-                .attr('fill', 'rgb(100,100,100)');
-
-            var changeLines = d3.selectAll('.changed').append("svg:line");
-            changeLines.attr("class", "update");
-            changeLines.classed("arrow", true);
-            changeLines.attr("x1", function(d) {
-                return (d.delta > 0) ? nodeRectWidth : 0;
-            });
-            changeLines.attr("y1", nodeRectHeight / 2);
-            changeLines.attr("x2", function(d) {
-                return (d.delta > 0) ? (nodeRectWidth + nodeRectWidthPadding - 4) + ((Math.abs(d.delta) - 1)) * (w / context.groupCount) : ((-nodeRectWidthPadding - ((Math.abs(d.delta) - 1)) * (w / context.groupCount)) + 4);
-            })
-                .attr("y2", nodeRectHeight / 2)
-                .style("stroke-dasharray", ("3, 3"))
-                .style("stroke", "rgb(100,100,100)")
-                .style("marker-end", "url(#end-arrow)")
-                .attr("opacity", "1");
-            node_cur_group.transition()
-                .duration(800)
+            ;
+            node_cur_group
+                .classed("update", true)
+                .transition().duration(800)
                 .ease("linear")
-                .attr("transform", function(d, i) {
+                .attr("transform", function (d, i) {
                     return "translate(" + ((((d.cur_group) - 1) * w / context.groupCount) + (nodeRectWidthPadding / 2)) + "," + ((i + (i * (nodeRectHeight + verticalPadding))) + 10 + paddingTop) + ")";
                 })
-                .each("end", function() {
-                    d3.selectAll(".arrow").attr("opacity", "1");
-                });
+                .each("end", function () {
+                    d3.selectAll(".arrow").style("opacity", "1");
+                })
+            ;
+
+            var node_current_text = node_cur_group.select(".node_cur_text");
+            node_current_text
+                .classed("update", true)
+                .attr("dy", (nodeRectHeight / 2) + 3)
+                .attr("dx", (nodeRectWidth / 4))
+                .style("fill", "blue")
+                .text(function (d) {
+                    if (typeof d[dropDownOption] === "number")
+                        return d[dropDownOption];
+                    else
+                        return d[dropDownOption].substring(0, 14);
+                })
+            ;
+            node_cur_group.exit().remove();
 
             for (var colIndex = 0; colIndex < context.columnData().length; colIndex++) {
                 if ((context.columnData()[colIndex]) && (context.columnData()[colIndex]).columnDropdownList()) {
-                    var columnData = this.svg.selectAll(".columnDataText_"+colIndex)
-                        .data(data)
-                        .enter()
-                        .append("g");
+                    var columnData = this.svg.selectAll(".columnDataText_" + colIndex).data(data);
+                    columnData.enter().append("g")
+                        .attr("class", "columnDataText_" + colIndex + " update")
+                        .each(function (d) {
+                            var element = d3.select(this);
+                            element.append("text");
+                        })
+                    ;
 
-                    columnData.attr("transform", function(d, i) {
-                        return "translate(" + (((context.columnData()[colIndex]).columnIndex() * w / context.groupCount) + (nodeRectWidthPadding / 2)) + "," + ((i + (i * (nodeRectHeight + verticalPadding))) + 12 + paddingTop) + ")";
-                    });
-
-                    columnData.classed("columnDataText_"+colIndex+" update", true)
+                    columnData
+                        .attr("transform", function(d, i) {
+                            return "translate(" + (((context.columnData()[colIndex]).columnIndex() * w / context.groupCount) + (nodeRectWidthPadding / 2)) + "," + ((i + (i * (nodeRectHeight + verticalPadding))) + 12 + paddingTop) + ")";
+                        })
                         .attr("width", 5)
                         .attr("height", nodeRectHeight)
                         .attr("rx", 6)
-                        .attr("ry", 6);
+                        .attr("ry", 6)
+                    ;
 
-                    var textLable = columnData.append("text");
-                    textLable.classed("columnDatatextLable_"+colIndex+" update", true);
-                    textLable.attr("y", -6)
+                    var textLable = columnData.select("text");
+                    textLable
+                        .attr("y", -6)
                         .attr("dy", (nodeRectHeight) + 14)
                         .attr("dx", 0)
                         .attr("height", 20)
-                        .attr("width", 29);
-                    textLable.text(function(d , i) {
-                        return d[(context.columnData()[colIndex]).columnDropdownList()];
-                    });
+                        .attr("width", 29)
+                        .text(function (d, i) {
+                            return d[(context.columnData()[colIndex]).columnDropdownList()];
+                        })
+                    ;
+                    columnData.exit().remove();
                 }
             }
         }
