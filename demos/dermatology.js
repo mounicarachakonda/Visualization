@@ -155,6 +155,7 @@
             if (show) {
                 var context = this;
                 this.cloneWidget(function (widget) {
+                    widget.columns(context._currWidget.columns());
                     context._cloneSurface
                         .surfacePadding(0)
                         .widget(widget)

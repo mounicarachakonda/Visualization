@@ -263,6 +263,7 @@
                     case "loader.js":
                         switch (root.location.hostname) {
                             case "rawgit.com":
+                            case "htmlpreview.github.io":
                                 githubConfig(myInfo.srcUrl);
                                 break;
                             default:
