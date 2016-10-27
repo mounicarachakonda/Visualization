@@ -1,9 +1,22 @@
 "use strict";
 (function(root, factory) {
     if (typeof define === "function" && define.amd) {
-        define(["d3", "handsontable", "../common/Widget", "../common/HTMLWidget", "../common/PropertyExt", "../common/Utility", "css!handsontable", "css!./Table"], factory);
+        define(["d3", 
+            "Handsontable", 
+            "../common/Widget", "../common/HTMLWidget", 
+            "../common/PropertyExt", "../common/Utility", 
+            "lodash","underscore","moment","numeral","numeric","Md5","jStat", "formula",
+            "ruleJS", "parser", "HandsontableFormula",
+            "css!handsontable", "css!./Table"], factory);
     } else {
-        root.handson_Table = factory(root.d3, root.Handsontable, root.common_Widget, root.common_HTMLWidget, root.common_PropertyExt, root.common_Utility);
+        root.handson_Table = factory(root.d3, 
+            root.Handsontable, 
+            root.common_Widget, root.common_HTMLWidget, 
+            root.common_PropertyExt, root.common_Utility,
+            root.lodash, root.underscore, root.moment, root.numeral, 
+            root.numeric, root.Md5, root.jStat, root.formula,
+            root.ruleJS, root.parser, root.HandsontableFormula
+            );
     }
 }(this, function(d3, Handsontable, Widget, HTMLWidget, PropertyExt, Utility) {
 

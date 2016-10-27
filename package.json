@@ -40,5 +40,8 @@
   },
   "author": "HPCC Systems",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/hpcc-systems/Visualization"
+  "homepage": "https://github.com/hpcc-systems/Visualization",
+  "dependencies": {
+    "lodash": "^4.16.4"
+  }
 }

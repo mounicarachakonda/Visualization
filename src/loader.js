@@ -30,7 +30,7 @@
                 "d3-hexbin": "../bower_components/d3-plugins/hexbin/hexbin",
                 "d3-tip": "../bower_components/d3-tip/index",
                 "d3-bullet": "../bower_components/d3-plugins/bullet/bullet",
-                "handsontable": "../bower_components/handsontable/dist/handsontable.full",
+                "Handsontable": "../bower_components/handsontable/dist/handsontable.full",
 
                 "amcharts": "../bower_components/amcharts3/amcharts/amcharts",
                 "amcharts.funnel": "../bower_components/amcharts3/amcharts/funnel",
@@ -42,10 +42,20 @@
                 "amcharts.gantt": "../bower_components/amcharts3/amcharts/gantt",
                 "amcharts.plugins.responsive": "../bower_components/amcharts3/amcharts/plugins/responsive/responsive",
                 "amchartsImg": "../bower_components/amcharts3/amcharts/images/",
-
                 "simpleheat": "../bower_components/simpleheat/index",
                 "autoComplete": "../bower_components/javascript-auto-complete/auto-complete",
 
+                "lodash": "../bower_components/lodash/lodash",
+                "underscore":"../bower_components/underscore.string/dist/underscore.string",
+                "moment": "../bower_components/moment/moment",
+                "numeral": "../bower_components/numeral/numeral",
+                "formula": "../bower_components/formulajs/dist/formula",
+                "numeric": "../bower_components/numericjs/src/numeric",
+                "Md5":  "../bower_components/js-md5/src/md5",
+                "jStat":   "../bower_components/jstat/dist/jstat",
+                "ruleJS": "../bower_components/ruleJS/dist/js/ruleJS",
+                "parser": "../bower_components/ruleJS/dist/js/parser",
+                "HandsontableFormula":"../bower_components/handsontable-ruleJS/src/handsontable.formula",
                 "src": "../src"
             },
             shim: {

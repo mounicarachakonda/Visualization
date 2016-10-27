@@ -49,7 +49,17 @@
     "es6-promise": "~3.2.2",
     "javascript-auto-complete": "~1.0.4",
     "d3-tip": "~0.6.7",
-    "handsontable": "~0.24.3"
+    "handsontable": "~0.24.3",
+    "ruleJS":"~0.0.3",
+    "lodash": "~3.10.1",
+    "handsontable-ruleJS":"~0.0.1",
+    "formulajs":"~1.0.8",
+    "jstat":"~1.5.3",
+    "numeric":"~1.2.6",
+    "numeral":"~1.5.3",
+    "md5":"~0.4.1",
+    "moment":"~2.15.2",
+    "underscore":"~1.8.3"
   },
   "resolutions": {
     "d3": "~3.5.17"
