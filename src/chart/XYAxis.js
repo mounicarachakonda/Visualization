@@ -83,7 +83,20 @@
     XYAxis.prototype.publish("yAxisDomainHigh", null, "string", "Y-Axis High", null, { optional: true, disable: function (w) { return w.yAxisType() === "ordinal"; } });
     XYAxis.prototype.publishProxy("yAxisDomainPadding", "valueAxis", "extend");
     XYAxis.prototype.publish("yAxisGuideLines", true, "boolean", "Y-Axis Guide Lines");
+
     XYAxis.prototype.publish("y2AxisCanShow", true, "boolean", "isY2AxisEnabled", null);
+    XYAxis.prototype.publishProxy("yAxis2Title", "valueAxis2", "title");
+    XYAxis.prototype.publishProxy("yAxis2TickCount", "valueAxis2", "tickCount");
+    XYAxis.prototype.publishProxy("yAxis2TickFormat", "valueAxis2", "tickFormat");
+    XYAxis.prototype.publishProxy("yAxis2Type", "valueAxis2", "type");
+    XYAxis.prototype.publishProxy("yAxis2TypeTimePattern", "valueAxis2", "timePattern");
+    XYAxis.prototype.publishProxy("yAxis2TypePowExponent", "valueAxis2", "powExponent");
+    XYAxis.prototype.publishProxy("yAxis2TypeLogBase", "valueAxis2", "logBase");
+    XYAxis.prototype.publish("yAxis2Stacked", false, "boolean", "Stacked Chart", null, { tags: ["Basic"], disable: function (w) { return w.xAxisType() !== "ordinal" || w._class.indexOf("chart_Column") < 0; } });
+    XYAxis.prototype.publish("yAxis2DomainLow", null, "string", "Y-Axis Low", null, { optional: true, disable: function (w) { return w.yAxisType() === "ordinal"; } });
+    XYAxis.prototype.publish("yAxis2DomainHigh", null, "string", "Y-Axis High", null, { optional: true, disable: function (w) { return w.yAxisType() === "ordinal"; } });
+    XYAxis.prototype.publishProxy("yAxis2DomainPadding", "valueAxis2", "extend");
+    XYAxis.prototype.publish("yAxis2GuideLines", true, "boolean", "Y-Axis Guide Lines");
     XYAxis.prototype.publish("regions", [], "array", "Regions");
     XYAxis.prototype.publish("sampleData", "", "set", "Display Sample Data", ["", "ordinal", "ordinalRange", "linear", "time-x", "time-y"]);
 
