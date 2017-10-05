@@ -436,9 +436,17 @@
             if (propEditor === this) {
                 widget[id](value);
             }
-            
+             var tmpPE ;
             if (widget._parentElement) {
-                var tmpPE = propEditor;
+               tmpPE = propEditor;
+                widget.render(function (w) {
+                    tmpPE.render();
+                });
+                propEditor = null;
+            }else if (widget._canvasJS) {
+               tmpPE = propEditor;
+                propEditor = propEditor.parentPropertyEditor();
+                widget = propEditor.widget();
                 widget.render(function (w) {
                     tmpPE.render();
                 });

@@ -48,7 +48,6 @@
 
                 "simpleheat": "../bower_components/simpleheat/index",
                 "autoComplete": "../bower_components/javascript-auto-complete/auto-complete",
-
                 "src": "../src"
             },
             shim: {
@@ -153,7 +152,6 @@
 
             "simpleheat": rawgitBaseUrl + "/mourner/simpleheat/v0.3.0/simpleheat",
             "autoComplete": rawgitBaseUrl + "/Pixabay/JavaScript-autoComplete/1.0.4/auto-complete",
-
             "src": srcUrl
         };
     }

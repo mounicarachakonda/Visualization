@@ -193,6 +193,8 @@
                             case "src/layout/Grid-hugeTables":
                                 it("Large Data");
                                 break;
+                            case "src/amchart/MultiChart-canvas"
+                                break;
                             default:
                                 it("DOM Node:  " + widgetPath + "-" + sample.key, function (done) {
                                     sample.value.factory(function (testWidget) {
@@ -236,6 +238,8 @@
                                 break;
                             case "src/layout/Grid-hugeTables":
                                 it("Large Data");
+                                break;
+                            case "src/amchart/MultiChart-canvas"
                                 break;
                             default:
                                 it("Surface Node:  " + widgetPath + "-" + sample.key, function (done) {
@@ -284,3 +288,4 @@
         return classParts[classParts.length - 1];
     };
 }));
+

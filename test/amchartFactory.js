@@ -1,4 +1,4 @@
-﻿"use strict";
+"use strict";
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
         define([], factory);
@@ -21,7 +21,7 @@
                             "inside": true
                         },
                         {
-                            "value": new Date("2014-07-13"),
+                            " value": new Date("2014-07-13"),
                             "toValue": new Date("2014-08-13"),
                             "lineAlpha": 0.2,
                             "lineColor": "#00cc00",
@@ -45,6 +45,25 @@
                         // .yAxisType("linear")
                         // .xAxisType("ordinal")
                     );
+                });
+            }
+        },
+        MultiChart: {
+            canvas: function (callback,id) {
+                require(["test/DataFactory", "src/amchart/MultipleCombo"], function (DataFactory, Combo) {
+                    var comboChart = new Combo();
+                    comboChart.setId(id);
+                    comboChart.columns(DataFactory.ND.subjects.columns);
+                    comboChart.dataLine(DataFactory.ND.subjects.lineData);
+                    comboChart.dataColumn(DataFactory.ND.subjects.data);
+                    comboChart.dataScatter(DataFactory.ND.subjects.scatterData);
+                    comboChart.setAxisY({
+                         title: "axis-y"
+                    });
+                    comboChart.setAxisY2({
+                        title: "axis-y2"
+                    });
+                    callback(comboChart);
                 });
             }
         },
@@ -297,3 +316,4 @@
     };
     return amchartFactory;
 }));
+

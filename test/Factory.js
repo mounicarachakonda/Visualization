@@ -115,24 +115,42 @@
             if (widgetPath) {
                 var context = this;
                 var func = widgetTest ? this.widgets[widgetPath][widgetTest].factory : d3.map(this.widgets[widgetPath]).values()[0].factory;
-                func(function (widget) {
-                    if (params) {
-                        for (var key in params) {
-                            if (widget["__meta_" + key] !== undefined) {
-                                if (widget["__meta_" + key].type === "array") {
-                                    widget[key](params[key].split(","));
-                                } else {
-                                    widget[key](params[key]);
+                 if(widgetTest === 'canvas'){
+                    func(function (widget) {
+                        if (params) {
+                            for (var key in params) {
+                                if (widget["__meta_" + key] !== undefined) {
+                                    if (widget["__meta_" + key].type === "array") {
+                                        widget[key](params[key].split(","));
+                                    } else {
+                                        widget[key](params[key]);
+                                    }
                                 }
                             }
                         }
-                    }
-                    callback(widget, widgetPath + (widgetTest    ? "." + widgetTest : ""));
-                });
+                        callback(widget, widgetPath + (widgetTest    ? "." + widgetTest : ""), widgetTest);
+                    }, "#surface");    
+                }else{
+                    func(function (widget) {
+                        if (params) {
+                            for (var key in params) {
+                                if (widget["__meta_" + key] !== undefined) {
+                                    if (widget["__meta_" + key].type === "array") {
+                                        widget[key](params[key].split(","));
+                                    } else {
+                                        widget[key](params[key]);
+                                    }
+                                }
+                            }
+                        }
+                        callback(widget, widgetPath + (widgetTest    ? "." + widgetTest : ""));
+                    });
+                }
             } else {
                 callback(null);
             }
         }
     };
 }));
+
 

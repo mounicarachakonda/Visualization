@@ -13,10 +13,15 @@
 
         this.initGrid();
         var context = this;
-        testFactory.deserializeFromURL(this.urlParts[1], function (widget, currTest) {
+        testFactory.deserializeFromURL(this.urlParts[1], function (widget, currTest, widgetTest) {
             if (widget) {
-                context._currTest = currTest;
-                context.showWidget(widget);
+                 if(widgetTest === 'canvas'){
+                        context._currTest = currTest;
+                        context.showCanvasWidget(widget);
+                    }else{
+                        context._currTest = currTest;
+                        context.showWidget(widget);
+                    }
             } else {
                 context.loadWidget("src/chart/Column");
             }
@@ -43,10 +48,10 @@
         var context = this;
         this._toggleDesign = d3.select(id)
             .on("click", function () {
-                context.showProperties();
+                context.showProperties(context);
             })
         ;
-        this.showProperties();
+        this.showProperties(context);
     };
 
     Main.prototype.showSpinner = function (show) {
@@ -57,20 +62,63 @@
         this._currTest = widgetPath + (widgetTest ? "." + widgetTest : "");
         var context = this;
         var func = widgetTest ? testFactory.widgets[widgetPath][widgetTest].factory : d3.map(testFactory.widgets[widgetPath]).values()[0].factory;
-        func(function (widget) {
-            if (params) {
-                for (var key in params) {
-                    if (widget["__meta_" + key] !== undefined) {
-                        if (widget["__meta_" + key].type === "array") {
-                            widget[key](params[key].split(","));
-                        } else {
-                            widget[key](params[key]);
+
+        if(widgetTest === 'canvas'){
+            func(function (widget) { 
+                if (params) {
+                    for (var key in params) {
+                        if (widget["__meta_" + key] !== undefined) {
+                            if (widget["__meta_" + key].type === "array") {
+                                widget[key](params[key].split(","));
+                            } else {
+                                widget[key](params[key]);
+                            }
                         }
                     }
                 }
-            }
-            context.showWidget(widget);
+                context.showCanvasWidget(widget);
+            }, "#surface");    
+        }else{
+            document.getElementById("surface").innerHTML = "";
+            func(function (widget) {
+                if (params) {
+                    for (var key in params) {
+                        if (widget["__meta_" + key] !== undefined) {
+                            if (widget["__meta_" + key].type === "array") {
+                                widget[key](params[key].split(","));
+                            } else {
+                                widget[key](params[key]);
+                            }
+                        }
+                    }
+                }
+                context.showWidget(widget);
+            });    
+        }
+        
+    };
+
+    Main.prototype.showCanvasWidget = function (widget) {
+        this._canvasWidget = widget;
+        this.showSpinner();
+        var context = this;
+        widget._canvasJS = true;
+        this._currWidget = widget;
+        this._propEditor
+            .widget(widget)
+            .render(widget.render(
+                function () {
+                context.showSpinner(false)
+            }));
+        if (this._monitorHandle) {
+            this._monitorHandle.remove();
+        }
+        this._monitorHandle = widget.monitor(function () {
+
+            context.updateUrl();
+            context.showClone();
         });
+        context.updateUrl();
     };
 
     Main.prototype.openWidget = function (json) {
@@ -138,22 +186,31 @@
         return false;
     };
 
-    Main.prototype.showProperties = function () {
+    Main.prototype.showProperties = function (context) {
         var show = this.propertiesVisible();
-        if (show) {
-            this._propEditor
-                .resize()
-                .render()
-            ;
-        }
-        if (this._currWidget && this._currWidget.designMode) {
-            this._currWidget.designMode(show);
-        }
-        if (this._main) {
-            this._main
-                .resize()
-                .lazyRender()
-            ;
+
+            
+            if (show) {
+                this._propEditor
+                    .resize()
+                    .render()
+                ;
+            }
+            
+            if (this._currWidget && this._currWidget.designMode) {
+                this._currWidget.designMode(show);
+            }
+            
+            if (this._main) {
+                this._main
+                    .resize()
+                    .lazyRender()
+                ;
+            } 
+        if (context._currWidget && context._currWidget._canvasJS) {
+             this._propEditor
+            .widget(context._canvasWidget)
+            .render(context._canvasWidget.render());
         }
     };
 

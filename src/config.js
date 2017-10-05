@@ -34,7 +34,6 @@ require.config({
 
         "simpleheat": "../bower_components/simpleheat/index",
         "autoComplete": "../bower_components/javascript-auto-complete/auto-complete",
-
         "src": "../src"
     },
     shim: {
@@ -133,7 +132,6 @@ case "cdn.rawgit.com":
 
             "simpleheat": "//" + window.location.hostname + "/mourner/simpleheat/v0.3.0/simpleheat",
             "autoComplete": "//" + window.location.hostname + "/Pixabay/JavaScript-autoComplete/1.0.4/auto-complete",
-
             "src": "../src"
         }
     });

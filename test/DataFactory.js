@@ -130,6 +130,18 @@
                     ["English", 45, 55, 52],
                     ["Math", 98, 92, 90],
                     ["Science", 66, 60, 72]
+                ],
+                scatterData: [
+                    ["Geography",  68],
+                    ["English", 55],
+                    ["Math",  92],
+                    ["Science", 60]
+                ],
+                lineData: [
+                    ["Geography",  58],
+                    ["English", 25],
+                    ["Math",  72],
+                    ["Science", 40]
                 ]
             },
             ampolar: {
